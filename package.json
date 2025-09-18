@@ -2,7 +2,7 @@
   "name": "ژورنال-معاملاتی-هوشمند",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://aliahmadi1080.github.io/journal_project2",
+  "homepage": "https://aliahmadi1080.github.io/journal_project2/",
   "type": "module",
   "scripts": {
     "dev": "vite",
