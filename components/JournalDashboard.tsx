@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useJournal } from '../hooks/useJournal';
 import type { Trade } from '../types';
@@ -12,6 +11,7 @@ import { DollarSignIcon, BrainCircuitIcon } from './icons';
 import { TradeCard } from './TradeCard';
 import { useApiKey } from '../hooks/useApiKey';
 import ApiKeyModal from './ApiKeyModal';
+import PerformanceChart from './PerformanceChart';
 
 const JournalDashboard: React.FC = () => {
     const { trades, initialCapital, setInitialCapital } = useJournal();
@@ -24,7 +24,7 @@ const JournalDashboard: React.FC = () => {
     const [isApiKeyModalOpen, setApiKeyModalOpen] = useState(false);
 
 
-    const { openTrades, closedTrades, totalPnl, winRate, totalTrades } = useMemo(() => {
+    const { openTrades, closedTrades, totalPnl, winRate, totalTrades, chartData } = useMemo(() => {
         const open = trades.filter(t => t.status === TradeStatus.Open);
         const closed = trades.filter(t => t.status === TradeStatus.Closed);
         
@@ -34,7 +34,29 @@ const JournalDashboard: React.FC = () => {
         const totalClosed = closed.length;
         const rate = totalClosed > 0 ? (wins / totalClosed) * 100 : 0;
         
-        return { openTrades: open, closedTrades: closed, totalPnl: pnl, winRate: rate, totalTrades: trades.length };
+        let cumulativePnl = 0;
+        const sortedClosedTrades = closed
+            .slice()
+            .sort((a, b) => (a.exitDate || '').localeCompare(b.exitDate || ''));
+
+        const dataPoints = sortedClosedTrades.map((trade, index) => {
+            cumulativePnl += trade.pnl || 0;
+            return {
+                name: `معامله ${index + 1}`,
+                pnl: cumulativePnl,
+            };
+        });
+        
+        const finalChartData = [{ name: 'شروع', pnl: 0 }, ...dataPoints];
+
+        return { 
+            openTrades: open, 
+            closedTrades: closed, 
+            totalPnl: pnl, 
+            winRate: rate, 
+            totalTrades: trades.length,
+            chartData: finalChartData
+        };
     }, [trades]);
 
     const handleOpenAnalysis = async () => {
@@ -86,6 +108,11 @@ const JournalDashboard: React.FC = () => {
                         <h3 className="text-lg font-semibold text-gray-300">نرخ برد (Win Rate)</h3>
                         <p className="text-3xl font-bold mt-2 text-cyan-400">{winRate.toFixed(1)}%</p>
                     </div>
+                </div>
+
+                <div className="bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-700 mb-6">
+                    <h3 className="text-xl font-bold text-white mb-4">نمودار عملکرد تجمعی</h3>
+                    <PerformanceChart data={chartData} />
                 </div>
 
                 <div className="bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-700 mb-6">
