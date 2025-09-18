@@ -5,7 +5,7 @@ import type { Trade } from '../types';
 // FIX: API_KEY should not be a global constant if it can be missing.
 // It's better to check for it inside the function that uses it.
 
-const ai = process.env.API_KEY ? new GoogleGenAI({ apiKey: process.env.API_KEY }) : null;
+const ai = process.env.API_KEY ? new GoogleGenAI({ apiKey: "AIzaSyDQwOLbDmdLf11Nzl4eJu5ELcu890cz7ZE" }) : null;
 
 if (!ai) {
   console.warn("API_KEY for Gemini is not set. AI features will not work.");
