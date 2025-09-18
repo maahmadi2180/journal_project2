@@ -10,6 +10,8 @@ import AnalysisModal from './AnalysisModal';
 import { analyzeJournal } from '../services/geminiService';
 import { DollarSignIcon, BrainCircuitIcon } from './icons';
 import { TradeCard } from './TradeCard';
+import { useApiKey } from '../hooks/useApiKey';
+import ApiKeyModal from './ApiKeyModal';
 
 const JournalDashboard: React.FC = () => {
     const { trades, initialCapital, setInitialCapital } = useJournal();
@@ -18,6 +20,9 @@ const JournalDashboard: React.FC = () => {
     const [analysisResult, setAnalysisResult] = useState('');
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [isFormVisible, setIsFormVisible] = useState(false);
+    const { apiKey } = useApiKey();
+    const [isApiKeyModalOpen, setApiKeyModalOpen] = useState(false);
+
 
     const { openTrades, closedTrades, totalPnl, winRate, totalTrades } = useMemo(() => {
         const open = trades.filter(t => t.status === TradeStatus.Open);
@@ -33,9 +38,13 @@ const JournalDashboard: React.FC = () => {
     }, [trades]);
 
     const handleOpenAnalysis = async () => {
+        if (!apiKey) {
+            setApiKeyModalOpen(true);
+            return;
+        }
         setAnalysisModalOpen(true);
         setIsAnalyzing(true);
-        const result = await analyzeJournal(trades, initialCapital);
+        const result = await analyzeJournal(apiKey, trades, initialCapital);
         setAnalysisResult(result);
         setIsAnalyzing(false);
     };
@@ -51,7 +60,7 @@ const JournalDashboard: React.FC = () => {
 
     return (
         <>
-            <Header />
+            <Header onOpenSettings={() => setApiKeyModalOpen(true)} />
             <main className="container mx-auto p-4 md:p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                      <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
@@ -133,6 +142,9 @@ const JournalDashboard: React.FC = () => {
                         trade={tradeToClose}
                         onClose={() => setTradeToClose(null)}
                     />
+                )}
+                {isApiKeyModalOpen && (
+                    <ApiKeyModal onClose={() => setApiKeyModalOpen(false)} />
                 )}
                 {isAnalysisModalOpen && (
                     <AnalysisModal

@@ -4,6 +4,7 @@ import { useAuth, AuthProvider } from './hooks/useAuth';
 import JournalDashboard from './components/JournalDashboard';
 import Login from './components/Login';
 import { JournalProvider } from './hooks/useJournal';
+import { ApiKeyProvider } from './hooks/useApiKey';
 
 const AppContent: React.FC = () => {
     const { currentUser } = useAuth();
@@ -23,9 +24,11 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
     return (
-        <AuthProvider>
-            <AppContent />
-        </AuthProvider>
+        <ApiKeyProvider>
+            <AuthProvider>
+                <AppContent />
+            </AuthProvider>
+        </ApiKeyProvider>
     );
 };
 

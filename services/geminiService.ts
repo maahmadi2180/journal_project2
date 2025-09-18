@@ -2,19 +2,12 @@
 import { GoogleGenAI } from "@google/genai";
 import type { Trade } from '../types';
 
-// FIX: API_KEY should not be a global constant if it can be missing.
-// It's better to check for it inside the function that uses it.
-
-const ai = process.env.API_KEY ? new GoogleGenAI({ apiKey: process.env.API_KEY }) : null;
-
-if (!ai) {
-  console.warn("API_KEY for Gemini is not set. AI features will not work.");
-}
-
-export const analyzeJournal = async (trades: Trade[], initialCapital: number): Promise<string> => {
-    if (!ai) {
-        return "خطا: کلید API برای Gemini تنظیم نشده است. لطفا متغیر محیطی API_KEY را تنظیم کنید.";
+export const analyzeJournal = async (apiKey: string, trades: Trade[], initialCapital: number): Promise<string> => {
+    if (!apiKey) {
+        return "خطا: کلید API برای Gemini تنظیم نشده است. لطفا از طریق تنظیمات، کلید API خود را وارد کنید.";
     }
+
+    const ai = new GoogleGenAI({ apiKey });
 
     const closedTrades = trades.filter(t => t.status === 'CLOSED');
     if (closedTrades.length === 0) {
@@ -53,10 +46,12 @@ export const analyzeJournal = async (trades: Trade[], initialCapital: number): P
             model: 'gemini-2.5-flash',
             contents: prompt,
         });
-        // FIX: According to Gemini API guidelines, response.text should be used to get the text.
         return response.text;
     } catch (error) {
         console.error("Error calling Gemini API:", error);
+        if (error instanceof Error && error.message.includes('API key not valid')) {
+             return "خطا: کلید API وارد شده نامعتبر است. لطفا آن را بررسی کرده و مجددا وارد نمایید.";
+        }
         if (error instanceof Error) {
             return `خطا در برقراری ارتباط با سرویس هوش مصنوعی: ${error.message}`;
         }
