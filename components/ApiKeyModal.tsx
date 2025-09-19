@@ -29,15 +29,15 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onClose }) => {
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center gap-2">
                         <KeyIcon className="w-6 h-6 text-amber-400" />
-                        <h2 className="text-xl font-bold text-white">تنظیم کلید API گوگل Gemini</h2>
+                        <h2 className="text-xl font-bold text-white">تنظیم کلید API از ChatGpt</h2>
                     </div>
                     <button onClick={onClose} className="text-gray-400 hover:text-white">
                         <XIcon className="w-6 h-6" />
                     </button>
                 </div>
                  <p className="text-gray-400 text-sm mb-4">
-                    برای استفاده از تحلیل هوش مصنوعی، به یک کلید API از Google AI Studio نیاز دارید. می‌توانید کلید خود را به صورت رایگان از 
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline mx-1">اینجا</a>
+                    برای استفاده از تحلیل هوش مصنوعی، به یک کلید API از ChatGpt نیاز دارید. می‌توانید کلید خود را به صورت رایگان از 
+                    <a href="https://github.com/marketplace/models" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline mx-1">اینجا</a>
                     دریافت کنید.
                 </p>
                 <p className="text-xs text-amber-400 mb-6">
