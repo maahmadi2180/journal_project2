@@ -12,6 +12,7 @@ import { TradeCard } from './TradeCard';
 import { useApiKey } from '../hooks/useApiKey';
 import ApiKeyModal from './ApiKeyModal';
 import PerformanceChart from './PerformanceChart';
+import { read } from 'fs';
 
 const JournalDashboard: React.FC = () => {
     const { trades, initialCapital, setInitialCapital } = useJournal();
@@ -67,6 +68,7 @@ const JournalDashboard: React.FC = () => {
         setAnalysisModalOpen(true);
         setIsAnalyzing(true);
         const result = await analyzeJournal(apiKey, trades, initialCapital);
+        console.log(result)
         setAnalysisResult(result);
         setIsAnalyzing(false);
     };
